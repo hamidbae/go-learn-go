@@ -1,7 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"jwt-medium/controllers"
+	"jwt-medium/models"
+
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
-	fmt.Println("helo")
+	
+	models.ConnectDataBase()
+
+	r := gin.Default()
+	
+	public := r.Group("/api")
+
+	public.POST("/register", controllers.Register)
+
+
+	r.Run(":8080")
+
 }
