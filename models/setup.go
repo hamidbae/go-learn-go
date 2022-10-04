@@ -40,5 +40,5 @@ func ConnectDataBase(){
 
 	DB.AutoMigrate(&User{})
 	DB.AutoMigrate(&Post{})
-		
+	// DB.Model(&Post{}).RemoveIndex("title")
 }
