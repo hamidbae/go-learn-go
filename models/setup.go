@@ -40,5 +40,15 @@ func ConnectDataBase(){
 
 	DB.AutoMigrate(&User{})
 	DB.AutoMigrate(&Post{})
-	// DB.Model(&Post{}).RemoveIndex("title")
+	DB.AutoMigrate(&Like{})
+
+	// Add foreign key
+	// 1st param : foreignkey field
+	// 2nd param : destination table(id)
+	// 3rd param : ONDELETE
+	// 4th param : ONUPDATE
+	// DB.Model(&Post{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
+
+	// update all field in Post user_id
+	// DB.Model(&Post{}).Updates(Post{UserId: 1})
 }

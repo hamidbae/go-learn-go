@@ -14,13 +14,14 @@ type User struct {
 	gorm.Model
 	Username string `gorm:"size:255;not null;unique" json:"username"`
 	Password string `gorm:"size:255;not null;" json:"password"`
+	Posts []Post `gorm:"many2many:likes;"`
 }
 
 func GetUserByID(uid uint) (User,error) {
 
 	var u User
 
-	if err := DB.First(&u,uid).Error; err != nil {
+	if err := DB.Preload("Posts").First(&u,uid).Error; err != nil {
 		return u,errors.New("User not found!")
 	}
 

@@ -19,13 +19,14 @@ func main() {
 	public.POST("/login",controllers.Login)
 	public.GET("/posts",controllers.GetAllPost)
 	public.GET("/posts/:id",controllers.GetOnePostById)
-	public.POST("/posts",controllers.AddPost)
-	public.PUT("/posts/:id",controllers.UpdatePost)
-	public.DELETE("/posts/:id",controllers.DeletePost)
 	
-	protected := r.Group("/api/admin")
+	protected := r.Group("/api")
 	protected.Use(middlewares.JwtAuthMiddleware())
-	protected.GET("/user",controllers.CurrentUser)
+	protected.GET("/profile",controllers.CurrentUser)
+	protected.POST("/posts",controllers.AddPost)
+	protected.PUT("/posts/:id",controllers.UpdatePost)
+	protected.DELETE("/posts/:id",controllers.DeletePost)
+	protected.GET("/posts/:id/like",controllers.LikePost)
 
 	r.Run(":8080")
 
