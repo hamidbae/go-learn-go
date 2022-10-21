@@ -51,7 +51,7 @@ func NewAuthUsecase(userRepo user.UserRepo) auth.AuthUsecase {
 
 func (u *AuthUsecaseImpl) RegisterSvc(ctx context.Context, input user.User) (result user.UserCreatedDto, usecaseError response.UsecaseError) {
 	userCheck, err := u.userRepo.GetUserByEmail(ctx, input.Email)
-	fmt.Println(userCheck)
+	// fmt.Println(userCheck)
 
 	if userCheck.Email == input.Email {
 		err = errors.New(fmt.Sprintf("user with email %s has been registered", input.Email))
@@ -64,7 +64,8 @@ func (u *AuthUsecaseImpl) RegisterSvc(ctx context.Context, input user.User) (res
 		return result, usecaseError
 	}
 
-	if userCheck.Username == input.Username {
+	usernameCheck, err := u.userRepo.GetUserByUsername(ctx, input.Username)
+	if usernameCheck.Username == input.Username {
 		err = errors.New(fmt.Sprintf("user with username %s has been registered", input.Username))
 		usecaseError = response.UsecaseError{
 			HttpCode:  http.StatusBadRequest,

@@ -41,6 +41,17 @@ func (u *UserRepoImpl) GetUserByEmail(ctx context.Context, email string) (result
 // 	return result, err
 // }
 
+func  (u *UserRepoImpl) GetUserByUsername(ctx context.Context, username string) (result user.User, err error){
+	log.Printf("%T - GetUserByEmail is invoked]\n", u)
+	defer log.Printf("%T - GetUserByEmail executed\n", u)
+	db := u.pgCln.GetClient()
+	db.Model(&user.User{}).Where("username = ?", username).Find(&result)
+	if err = db.Error; err != nil {
+		log.Printf("error when getting user with username %v\n",username)
+	}
+	return result, err
+}
+
 func (u *UserRepoImpl) InsertUser(ctx context.Context, insertedUser *user.User) (err error) {
 	log.Printf("%T - InsertUser is invoked]\n", u)
 	defer log.Printf("%T - InsertUser executed\n", u)
