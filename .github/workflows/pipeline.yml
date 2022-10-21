@@ -1,0 +1,48 @@
+name: Final Project Go FGA
+
+on:
+  push:
+    branches:
+      - final-project
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-18.04
+    steps:
+      - run: echo "Starting build package"
+      - uses: actions/checkout@v3
+      - name: Setup JDK 11
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.19.1"
+      - name: Docker Login
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: hamidbae/go-fga:latest
+  deployment:
+    name: Deploy
+    runs-on: ubuntu-18.04
+    needs: build
+    steps:
+      - run: echo "Starting deploy container"
+      - uses: actions/checkout@v3
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_SSH_HOST_PROD }}
+          port: 22
+          username: ${{ secrets.EC2_SSH_USERNAME_PROD }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY_PROD }}
+          script: |
+            docker stop go-fga-final-project
+            docker rmi hamidbae/go-fga:latest
+            docker pull hamidbae/go-fga:latest
+            docker run -d --rm --name go-fga-final-project -p 80:8080 --env-file=.docker.env --network go-fga hamidbae/go-fga:latest
