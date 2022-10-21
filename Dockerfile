@@ -22,6 +22,6 @@ RUN mkdir -p /app
 WORKDIR /app
 
 COPY --from=builder /app/go-fga .
-COPY --from=builder /app/.env .
+# COPY --from=builder /app/.env .
 
 CMD [ "./go-fga" ]
