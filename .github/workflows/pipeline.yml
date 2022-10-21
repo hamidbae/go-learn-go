@@ -37,10 +37,10 @@ jobs:
       - name: Deploy using ssh
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_SSH_HOST_PROD }}
+          host: ${{ secrets.EC2_SSH_HOST }}
           port: 22
-          username: ${{ secrets.EC2_SSH_USERNAME_PROD }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY_PROD }}
+          username: ${{ secrets.EC2_SSH_USERNAME }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             docker stop go-fga-final-project
             docker rmi hamidbae/go-fga:latest
