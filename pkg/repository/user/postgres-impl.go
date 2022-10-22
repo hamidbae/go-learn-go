@@ -60,3 +60,28 @@ func (u *UserRepoImpl) InsertUser(ctx context.Context, insertedUser *user.User) 
 	}
 	return err
 }
+
+func (u *UserRepoImpl) UpdateUser(ctx context.Context, userId uint64, userUpdate *user.UserUpdateDto) (user user.User, err error) {
+	log.Printf("%T - UpdateUser is invoked]\n", u)
+	defer log.Printf("%T - UpdateUser executed\n", u)
+
+	db := u.pgCln.GetClient()
+	db.Model(&user).Where("id = ?", userId).Update("username", userUpdate.Username).Update("email", userUpdate.Email)
+	if err = db.Error; err != nil {
+		log.Printf("error when update user with email %v\n",user.Email)
+	}
+	return user, err
+}
+
+func (u *UserRepoImpl) DeleteUserById(ctx context.Context, userId uint64) (err error) {
+	log.Printf("%T - DeleteUserById is invoked]\n", u)
+	defer log.Printf("%T - DeleteUserById executed\n", u)
+
+	db := u.pgCln.GetClient()
+	// db.Model(&user.User{}).Where("id = ?", userId).Delete()
+	db.Delete(&user.User{}, userId)
+	if err = db.Error; err != nil {
+		log.Printf("error when update user with id %v\n", userId)
+	}
+	return err
+}

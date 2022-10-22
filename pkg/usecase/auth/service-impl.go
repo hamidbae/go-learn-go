@@ -26,29 +26,6 @@ func NewAuthUsecase(userRepo user.UserRepo) auth.AuthUsecase {
 	return &AuthUsecaseImpl{userRepo: userRepo}
 }
 
-// func (u *AuthUsecaseImpl) GetAuthByEmailSvc(ctx context.Context, email string) (result user.Auth, err error) {
-// 	log.Printf("%T - GetAuthByEmail is invoked]\n", u)
-// 	defer log.Printf("%T - GetAuthByEmail executed\n", u)
-// 	// get user from repository (database)
-// 	log.Println("getting user from user repository")
-// 	result, err = u.userRepo.GetAuthByEmail(ctx, email)
-// 	if err != nil {
-// 		// ini berarti ada yang salah dengan connection di database
-// 		log.Println("error when fetching data from database: " + err.Error())
-// 		err = errors.New("INTERNAL_SERVER_ERROR")
-// 		return result, err
-// 	}
-// 	// check user id > 0 ?
-// 	log.Println("checking user id")
-// 	if result.ID <= 0 {
-// 		// kalau tidak berarti user not found
-// 		log.Println("user is not found: " + email)
-// 		err = errors.New("NOT_FOUND")
-// 		return result, err
-// 	}
-// 	return result, err
-// }
-
 func (u *AuthUsecaseImpl) RegisterSvc(ctx context.Context, input user.User) (result user.UserCreatedDto, usecaseError response.UsecaseError) {
 	userCheck, err := u.userRepo.GetUserByEmail(ctx, input.Email)
 	// fmt.Println(userCheck)
@@ -180,43 +157,7 @@ func (u *AuthUsecaseImpl) LoginSvc(ctx context.Context, input auth.Login) (resul
 }
 
 func (u *AuthUsecaseImpl) RefreshTokenSvc(ctx context.Context, userId uint64) (result auth.Token, usecaseError response.UsecaseError) {
-	// get user id
-	// userId := ctx..Value("user_id")
-	// if userId == "" {
-	// 	err := errors.New("did not recognize user after middleware")
-	// 	usecaseError := response.UsecaseError{
-	// 		HttpCode:  http.StatusInternalServerError,
-	// 		Message:   "internal server errror",
-	// 		ErrorType: errortype.INTERNAL_SERVER_ERROR,
-	// 		Error:     err,
-	// 	}
-	// 	return result, usecaseError
-	// }
-
-	// stringUserId, ok := userId.(string)
-	// if ok == false {
-	// 	err := errors.New("did not recognize user after middleware")
-	// 	usecaseError := response.UsecaseError{
-	// 		HttpCode:  http.StatusInternalServerError,
-	// 		Message:   "internal server errror",
-	// 		ErrorType: errortype.INTERNAL_SERVER_ERROR,
-	// 		Error:     err,
-	// 	}
-	// 	return result, usecaseError
-	// }
-
-	// intUserId, err := strconv.ParseInt(stringUserId, 10, 64)
-	// if err != nil {
-	// 	err := errors.New("did not recognize user after middleware")
-	// 	usecaseError := response.UsecaseError{
-	// 		HttpCode:  http.StatusInternalServerError,
-	// 		Message:   "internal server errror",
-	// 		ErrorType: errortype.INTERNAL_SERVER_ERROR,
-	// 		Error:     err,
-	// 	}
-	// 	return result, usecaseError
-	// }
-
+	
 	user, err := u.userRepo.GetUserById(ctx, userId)
 	if err != nil {
 		err := errors.New("did not recognize user after middleware")
