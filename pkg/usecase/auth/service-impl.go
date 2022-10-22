@@ -88,13 +88,13 @@ func (u *AuthUsecaseImpl) RegisterSvc(ctx context.Context, input user.User) (res
 		return result, usecaseError
 	}
 
-	age := helper.CountAge(time.Time(input.DoB)) 
+	age := helper.CountAge(time.Time(input.DoB))
 
 	result = user.UserCreatedDto{
-		ID: input.ID,
+		ID:       input.ID,
 		Username: input.Username,
-		Email: input.Email,
-		Age: age,
+		Email:    input.Email,
+		Age:      age,
 	}
 
 	return result, usecaseError
@@ -169,6 +169,99 @@ func (u *AuthUsecaseImpl) LoginSvc(ctx context.Context, input auth.Login) (resul
 		Username: userCheck.Username,
 		Email:    userCheck.Email,
 		DOB:      time.Time(userCheck.DoB),
+	}
+	tokenID, _ := token.CreateJWT(ctx, claimID)
+
+	result.AccessToken = accessToken
+	result.RefreshToken = refreshToken
+	result.TokenID = tokenID
+
+	return result, usecaseError
+}
+
+func (u *AuthUsecaseImpl) RefreshTokenSvc(ctx context.Context, userId uint64) (result auth.Token, usecaseError response.UsecaseError) {
+	// get user id
+	// userId := ctx..Value("user_id")
+	// if userId == "" {
+	// 	err := errors.New("did not recognize user after middleware")
+	// 	usecaseError := response.UsecaseError{
+	// 		HttpCode:  http.StatusInternalServerError,
+	// 		Message:   "internal server errror",
+	// 		ErrorType: errortype.INTERNAL_SERVER_ERROR,
+	// 		Error:     err,
+	// 	}
+	// 	return result, usecaseError
+	// }
+
+	// stringUserId, ok := userId.(string)
+	// if ok == false {
+	// 	err := errors.New("did not recognize user after middleware")
+	// 	usecaseError := response.UsecaseError{
+	// 		HttpCode:  http.StatusInternalServerError,
+	// 		Message:   "internal server errror",
+	// 		ErrorType: errortype.INTERNAL_SERVER_ERROR,
+	// 		Error:     err,
+	// 	}
+	// 	return result, usecaseError
+	// }
+
+	// intUserId, err := strconv.ParseInt(stringUserId, 10, 64)
+	// if err != nil {
+	// 	err := errors.New("did not recognize user after middleware")
+	// 	usecaseError := response.UsecaseError{
+	// 		HttpCode:  http.StatusInternalServerError,
+	// 		Message:   "internal server errror",
+	// 		ErrorType: errortype.INTERNAL_SERVER_ERROR,
+	// 		Error:     err,
+	// 	}
+	// 	return result, usecaseError
+	// }
+
+	user, err := u.userRepo.GetUserById(ctx, userId)
+	if err != nil {
+		err := errors.New("did not recognize user after middleware")
+		usecaseError := response.UsecaseError{
+			HttpCode:  http.StatusInternalServerError,
+			Message:   "internal server errror",
+			ErrorType: errortype.INTERNAL_SERVER_ERROR,
+			Error:     err,
+		}
+		return result, usecaseError
+	}
+
+	// create access token
+	timeNow := time.Now()
+	claimAccess := auth.ClaimAccess{
+		JWTID:          uuid.New(),
+		Subject:        userId,
+		Issuer:         "go-fga.com",
+		Audience:       "user.go-fga.com",
+		Scope:          "user",
+		Type:           "ACCESS_TOKEN",
+		IssuedAt:       timeNow.Unix(),
+		NotValidBefore: timeNow.Unix(),
+		ExpiredAt:      timeNow.Add(24 * time.Hour).Unix(),
+	}
+	accessToken, _ := token.CreateJWT(ctx, claimAccess)
+
+	claimRefresh := auth.ClaimAccess{
+		JWTID:          uuid.New(),
+		Subject:        userId,
+		Issuer:         "go-fga.com",
+		Audience:       "user.go-fga.com",
+		Scope:          "user",
+		Type:           "REFRESH_TOKEN",
+		IssuedAt:       timeNow.Unix(),
+		NotValidBefore: timeNow.Unix(),
+		ExpiredAt:      timeNow.Add(1000 * time.Hour).Unix(),
+	}
+	refreshToken, _ := token.CreateJWT(ctx, claimRefresh)
+
+	claimID := auth.ClaimID{
+		JWTID:    uuid.New(),
+		Username: user.Username,
+		Email:    user.Email,
+		DOB:      time.Time(user.DoB),
 	}
 	tokenID, _ := token.CreateJWT(ctx, claimID)
 

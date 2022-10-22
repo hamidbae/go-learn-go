@@ -27,23 +27,20 @@ func (u *UserRepoImpl) GetUserByEmail(ctx context.Context, email string) (result
 	return result, err
 }
 
-// func (u *UserRepoImpl) GetUserById(ctx context.Context, user_id uint64) (result user.User, err error) {
-// 	log.Printf("%T - GetUserById is invoked]\n", u)
-// 	defer log.Printf("%T - GetUserById executed\n", u)
-// 	// get gorm client first
-// 	db := u.pgCln.GetClient()
-// 	// insert new user
-// 	db.Model(&user.User{}).Where("id = ?", user_id).Find(&result)
-// 	//check error
-// 	if err = db.Error; err != nil {
-// 		log.Printf("error when getting user with user_id %v\n",user_id)
-// 	}
-// 	return result, err
-// }
+func  (u *UserRepoImpl) GetUserById(ctx context.Context, userId uint64) (result user.User, err error){
+	log.Printf("%T - GetUserById is invoked]\n", u)
+	defer log.Printf("%T - GetUserById executed\n", u)
+	db := u.pgCln.GetClient()
+	db.Model(&user.User{}).Where("id = ?", userId).Find(&result)
+	if err = db.Error; err != nil {
+		log.Printf("error when getting user with id %v\n",userId)
+	}
+	return result, err
+}
 
 func  (u *UserRepoImpl) GetUserByUsername(ctx context.Context, username string) (result user.User, err error){
-	log.Printf("%T - GetUserByEmail is invoked]\n", u)
-	defer log.Printf("%T - GetUserByEmail executed\n", u)
+	log.Printf("%T - GetUserByUsername is invoked]\n", u)
+	defer log.Printf("%T - GetUserByUsername executed\n", u)
 	db := u.pgCln.GetClient()
 	db.Model(&user.User{}).Where("username = ?", username).Find(&result)
 	if err = db.Error; err != nil {

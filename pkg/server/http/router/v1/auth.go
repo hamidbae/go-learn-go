@@ -3,6 +3,7 @@ package v1
 import (
 	engine "final-project/config/gin"
 	"final-project/pkg/domain/auth"
+	"final-project/pkg/server/http/middleware"
 	"final-project/pkg/server/http/router"
 
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,7 @@ func NewAuthRouter(ginEngine engine.HttpServer, authHandler auth.AuthHandler) ro
 func (u *AuthRouterImpl) post() {
 	u.routerGroup.POST("/register", u.authHandler.RegisterHdl)
 	u.routerGroup.POST("/login", u.authHandler.LoginHdl)
+	u.routerGroup.POST("/refresh-token", middleware.CheckJwtAuth, u.authHandler.RefreshTokenHdl)
 }
 
 func (u *AuthRouterImpl) Routers() {

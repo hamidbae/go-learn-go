@@ -9,4 +9,5 @@ import (
 type AuthUsecase interface {
 	RegisterSvc(ctx context.Context, input user.User) (result user.UserCreatedDto, err response.UsecaseError)
 	LoginSvc(ctx context.Context, input Login) (result Token, err response.UsecaseError)
+	RefreshTokenSvc(ctx context.Context, userId uint64) (result Token, err response.UsecaseError)
 }

@@ -2,6 +2,7 @@ package token
 
 import (
 	"context"
+	"final-project/pkg/domain/auth"
 	"os"
 
 	"github.com/kataras/jwt"
@@ -19,18 +20,18 @@ func CreateJWT(ctx context.Context, claim any) (string, error) {
 	return string(token), nil
 }
 
-// func VerifyJWT(ctx context.Context, token string) (claims claim.Access) {
+func VerifyJWT(ctx context.Context, token string) (claims auth.ClaimAccess, err error) {
 
-// 	// Verify and extract claims from a token:
-// 	verifiedToken, err := jwt.Verify(jwt.HS256, sharedKey, []byte(token))
-// 	// unverifiedToken, err := jwt.Decode([]byte(token))
-// 	if err != nil {
-// 		panic(err)
-// 	}
+	// Verify and extract claims from a token:
+	verifiedToken, err := jwt.Verify(jwt.HS256, jwtSecret, []byte(token))
+	// unverifiedToken, err := jwt.Decode([]byte(token))
+	if err != nil {
+		return claims, err
+	}
 
-// 	err = verifiedToken.Claims(&claims)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	return claims
-// }
+	err = verifiedToken.Claims(&claims)
+	if err != nil {
+		return claims, err
+	}
+	return claims, nil
+}

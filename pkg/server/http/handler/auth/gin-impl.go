@@ -34,7 +34,7 @@ func (u *AuthHdlImpl) RegisterHdl(ctx *gin.Context) {
 		responseMessage := response.Response{
 			Message: "error while binding body",
 			InvalidArg: &response.InvalidArg{
-				ErrorType:    errortype.VALIDATION_VAILED,
+				ErrorType:    errortype.VALIDATION_FAILED,
 				ErrorMessage: err.Error(),
 			},
 		}
@@ -56,7 +56,7 @@ func (u *AuthHdlImpl) RegisterHdl(ctx *gin.Context) {
 		responseMessage := response.Response{
 			Message: "error while validating body",
 			InvalidArg: &response.InvalidArg{
-				ErrorType:    errortype.VALIDATION_VAILED,
+				ErrorType:    errortype.VALIDATION_FAILED,
 				ErrorMessage: err.Error(),
 			},
 		}
@@ -77,7 +77,7 @@ func (u *AuthHdlImpl) RegisterHdl(ctx *gin.Context) {
 		responseMessage := response.Response{
 			Message: "error while parsing date",
 			InvalidArg: &response.InvalidArg{
-				ErrorType:    errortype.VALIDATION_VAILED,
+				ErrorType:    errortype.VALIDATION_FAILED,
 				ErrorMessage: err.Error(),
 			},
 		}
@@ -182,7 +182,7 @@ func (u *AuthHdlImpl) LoginHdl(ctx *gin.Context) {
 		responseMessage := response.Response{
 			Message: "error while validating body",
 			InvalidArg: &response.InvalidArg{
-				ErrorType:    errortype.VALIDATION_VAILED,
+				ErrorType:    errortype.VALIDATION_FAILED,
 				ErrorMessage: err.Error(),
 			},
 		}
@@ -221,6 +221,42 @@ func (u *AuthHdlImpl) LoginHdl(ctx *gin.Context) {
 	// response result if success
 	responseMessage := response.Response{
 		Message: "login success",
+		Data:    result,
+	}
+
+	ctx.JSONP(
+		http.StatusOK,
+		response.Build(
+			http.StatusOK,
+			responseMessage,
+		),
+	)
+}
+
+func (u *AuthHdlImpl) RefreshTokenHdl(ctx *gin.Context) {
+	userId := ctx.GetUint64("user_id")
+	result, usecaseError := u.authUsecase.RefreshTokenSvc(ctx, userId)
+	if usecaseError.Error != nil {
+		responseMessage := response.Response{
+			Message: usecaseError.Message,
+			InvalidArg: &response.InvalidArg{
+				ErrorType:    usecaseError.ErrorType,
+				ErrorMessage: usecaseError.Error.Error(),
+			},
+		}
+
+		ctx.AbortWithStatusJSON(
+			usecaseError.HttpCode,
+			response.Build(
+				usecaseError.HttpCode,
+				responseMessage,
+			),
+		)
+		return
+	}
+
+	responseMessage := response.Response{
+		Message: "refresh token success",
 		Data:    result,
 	}
 
