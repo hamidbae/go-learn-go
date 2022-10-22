@@ -2,12 +2,10 @@ package postgres
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"final-project/pkg/domain/user"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -32,11 +30,11 @@ type PostgresClientImpl struct {
 func NewPostgresConnection() PostgresClient {
 	// uncomment below when run on local
 	
-	err := godotenv.Load(".env")
+	// err := godotenv.Load(".env")
 
-	if err != nil {
-	  log.Fatalf("Error loading .env file")
-	}
+	// if err != nil {
+	//   log.Fatalf("Error loading .env file")
+	// }
 	
 	config := Config{
 		Host: os.Getenv("DB_HOST"),
