@@ -23,6 +23,11 @@ import (
 	commentrouter "final-project/pkg/server/http/router/v1"
 	commentusecase "final-project/pkg/usecase/comment"
 
+	socialmediarepo "final-project/pkg/repository/socialmedia"
+	socialmediahandler "final-project/pkg/server/http/handler/socialmedia"
+	socialmediarouter "final-project/pkg/server/http/router/v1"
+	socialmediausecase "final-project/pkg/usecase/socialmedia"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,21 +46,25 @@ func main() {
 	userRepo := userrepo.NewUserRepo(postgresCln)
 	photoRepo := photorepo.NewPhotoRepo(postgresCln)
 	commentRepo := commentrepo.NewCommentRepo(postgresCln)
+	socialMediaRepo := socialmediarepo.NewSocialMediaRepo(postgresCln)
 	
 	authUsecase := authusecase.NewAuthUsecase(userRepo)
 	userUsecase := userusecase.NewUserUsecase(userRepo)
 	photoUsecase := photousecase.NewPhotoUsecase(photoRepo, userRepo)
 	commentUsecase := commentusecase.NewCommentUsecase(commentRepo, userRepo)
+	socialMediaUsecase := socialmediausecase.NewSocialMediaUsecase(socialMediaRepo, userRepo)
 	
 	authHandler := authhandler.NewAuthHandler(authUsecase)
 	userHandler := userhandler.NewUserHandler(userUsecase)
 	photoHandler := photohandler.NewPhotoHandler(photoUsecase)
 	commentHandler := commenthandler.NewCommentHandler(commentUsecase)
+	socialMediaHandler := socialmediahandler.NewSocialMediaHandler(socialMediaUsecase)
 	
 	userrouter.NewUserRouter(ginEngine, userHandler).Routers()
 	authrouter.NewAuthRouter(ginEngine, authHandler).Routers()
 	photorouter.NewPhotoRouter(ginEngine, photoHandler).Routers()
 	commentrouter.NewCommentRouter(ginEngine, commentHandler).Routers()
+	socialmediarouter.NewSocialMediaRouter(ginEngine, socialMediaHandler).Routers()
 	
 	ginEngine.Serve()
 }

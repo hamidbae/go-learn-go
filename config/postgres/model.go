@@ -6,6 +6,7 @@ import (
 
 	"final-project/pkg/domain/comment"
 	"final-project/pkg/domain/photo"
+	"final-project/pkg/domain/socialmedia"
 	"final-project/pkg/domain/user"
 
 	"gorm.io/driver/postgres"
@@ -67,6 +68,7 @@ func NewPostgresConnection() PostgresClient {
 	db.AutoMigrate(&user.User{})
 	db.AutoMigrate(&photo.Photo{})
 	db.AutoMigrate(&comment.Comment{})
+	db.AutoMigrate(&socialmedia.SocialMedia{})
 
 	return &PostgresClientImpl{cln: db, config: config}
 }
