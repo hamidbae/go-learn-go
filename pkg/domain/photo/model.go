@@ -26,3 +26,8 @@ type AddPhotoInput struct {
 	URL       string         `validate:"required"`
 	UserId    uint64 
 }
+
+type UpdatePhotoInput struct {
+	Title     string         `validate:"required"`
+	Caption   string         `validate:"required"`
+}

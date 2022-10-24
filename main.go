@@ -38,7 +38,7 @@ func main() {
 	
 	authUsecase := authusecase.NewAuthUsecase(userRepo)
 	userUsecase := userusecase.NewUserUsecase(userRepo)
-	photoUsecase := photousecase.NewPhotoUsecase(photoRepo)
+	photoUsecase := photousecase.NewPhotoUsecase(photoRepo, userRepo)
 	
 	authHandler := authhandler.NewAuthHandler(authUsecase)
 	userHandler := userhandler.NewUserHandler(userUsecase)

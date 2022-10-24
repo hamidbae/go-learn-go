@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"gorm.io/datatypes"
-	"gorm.io/gorm"
 )
 
 type User struct {
@@ -15,7 +14,6 @@ type User struct {
 	DoB       datatypes.Date `json:"date_of_birth" gorm:"column:date_of_birth;not null" validate:"required"`
 	CreatedAt time.Time      `json:"created_at" gorm:"column:created_at;DEFAULT:current_timestamp;not null"`
 	UpdatedAt time.Time      `json:"updated_at" gorm:"column:updated_at;"`
-	DeletedAt gorm.DeletedAt      `json:"deleted_at" gorm:"column:deleted_at;"`
 }
 
 type UserDto struct {
