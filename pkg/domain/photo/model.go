@@ -3,6 +3,7 @@ package photo
 import (
 	"time"
 
+	"final-project/pkg/domain/comment"
 	"final-project/pkg/domain/user"
 
 	"gorm.io/gorm"
@@ -17,7 +18,8 @@ type Photo struct {
 	CreatedAt time.Time      `json:"created_at" gorm:"column:created_at;DEFAULT:current_timestamp;not null"`
 	UpdatedAt time.Time      `json:"updated_at" gorm:"column:updated_at;"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"column:deleted_at;"`
-	User      *user.User      `json:"user,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	User      *user.User      `json:"user,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Comments  *[]comment.Comment `json:"comments,omitempty" gorm:"foreignkey:PhotoId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type AddPhotoInput struct {

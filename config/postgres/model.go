@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"final-project/pkg/domain/comment"
 	"final-project/pkg/domain/photo"
 	"final-project/pkg/domain/user"
 
@@ -65,6 +66,7 @@ func NewPostgresConnection() PostgresClient {
 	}
 	db.AutoMigrate(&user.User{})
 	db.AutoMigrate(&photo.Photo{})
+	db.AutoMigrate(&comment.Comment{})
 
 	return &PostgresClientImpl{cln: db, config: config}
 }
