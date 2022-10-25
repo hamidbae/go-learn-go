@@ -57,7 +57,7 @@ local docs url : http://localhost:8080/swagger/index.html
 
 deployed baseurl : http://44.201.153.46/api
 
-deployed docs url : http://44.201.153.46/api/swagger/index.html
+deployed docs url : http://44.201.153.46/swagger/index.html
 
 postman documentation : https://documenter.getpostman.com/view/12388903/2s84LStpgT
 
