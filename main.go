@@ -4,10 +4,8 @@ import (
 	engine "final-project/config/gin"
 	"final-project/config/postgres"
 	"final-project/docs"
-	"log"
 	"os"
 
-	"github.com/joho/godotenv"
 	swaggerfiles "github.com/swaggo/files"
 	ginswagger "github.com/swaggo/gin-swagger"
 
@@ -52,11 +50,11 @@ import (
 // @description "Type 'Bearer TOKEN' to correctly set the API Key"
 func main() {
 	// uncomment below when run on local
-	err := godotenv.Load(".env")
+	// err := godotenv.Load(".env")
 
-	if err != nil {
-	  log.Fatalf("Error loading .env file")
-	}
+	// if err != nil {
+	//   log.Fatalf("Error loading .env file")
+	// }
 
 	postgresCln := postgres.NewPostgresConnection()
 	
