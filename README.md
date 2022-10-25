@@ -59,6 +59,8 @@ deployed baseurl : http://44.201.153.46/api
 
 deployed docs url : http://44.201.153.46/api/swagger/index.html
 
+postman documentation : https://documenter.getpostman.com/view/12388903/2s84LStpgT
+
 # Notes For Author
 
 run postgres container
