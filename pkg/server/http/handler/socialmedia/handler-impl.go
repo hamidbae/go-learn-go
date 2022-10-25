@@ -20,6 +20,15 @@ func NewSocialMediaHandler(socialMediaUsecase socialmedia.SocialMediaUsecase) so
 	return &SocialMediaHdlImpl{socialMediaUsecase: socialMediaUsecase}
 }
 
+// @Summary add social media to user
+// @Description add social media to user, auth required
+// @Tags social-media
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param socialmedia body socialmedia.AddSocialMediaInput true "social media info"
+// @Success 201 {object} socialmedia.SocialMedia
+// @Router /v1/social-media [post]
 func (u *SocialMediaHdlImpl) AddSocialMediaHdl(ctx *gin.Context){
 	userId := ctx.GetUint64("user_id")
 	reqBody := socialmedia.AddSocialMediaInput{}
@@ -82,7 +91,6 @@ func (u *SocialMediaHdlImpl) AddSocialMediaHdl(ctx *gin.Context){
 		)
 		return
 	}
-	result.User = nil
 
 	responseMessage := response.Response{
 		Message: "add socialMedia success",
@@ -90,15 +98,23 @@ func (u *SocialMediaHdlImpl) AddSocialMediaHdl(ctx *gin.Context){
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)
 }
 
 
+// @Summary get social media from logged in user
+// @Description list all social media from logged in user, auth required
+// @Tags social-media
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Success 200 {object} []socialmedia.SocialMedia
+// @Router /v1/social-media [get]
 func (u *SocialMediaHdlImpl) GetSocialMediaByUserIdHdl(ctx *gin.Context) {
 	userId := ctx.GetUint64("user_id")
 	result, usecaseError := u.socialMediaUsecase.GetSocialMediasByUserIdSvc(ctx, userId)
@@ -135,6 +151,16 @@ func (u *SocialMediaHdlImpl) GetSocialMediaByUserIdHdl(ctx *gin.Context) {
 	)
 }
 
+// @Summary update social media
+// @Description update social media, auth required
+// @Tags social-media
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param id path int true "social media id"
+// @Param socialmedia body socialmedia.UpdateSocialMediaInput true "social media info"
+// @Success 201 {object} socialmedia.SocialMedia
+// @Router /v1/social-media/{id} [put]
 func (u *SocialMediaHdlImpl) UpdateSocialMediaHdl(ctx *gin.Context) {
 	userId := ctx.GetUint64("user_id")
 	paramId := ctx.Params.ByName("id")
@@ -226,15 +252,23 @@ func (u *SocialMediaHdlImpl) UpdateSocialMediaHdl(ctx *gin.Context) {
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)
 }
 
-
+// @Summary delete social media
+// @Description delete social media, auth required
+// @Tags social-media
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param id path int true "social media id"
+// @Success 201
+// @Router /v1/social-media/{id} [delete]
 func (u *SocialMediaHdlImpl) DeleteSocialMediaByIdHdl(ctx *gin.Context) {
 	userId := ctx.GetUint64("user_id")
 	paramId := ctx.Params.ByName("id")
@@ -284,9 +318,9 @@ func (u *SocialMediaHdlImpl) DeleteSocialMediaByIdHdl(ctx *gin.Context) {
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)

@@ -20,6 +20,15 @@ func NewCommentHandler(commentUsecase comment.CommentUsecase) comment.CommentHan
 	return &CommentHdlImpl{commentUsecase: commentUsecase}
 }
 
+// @Summary add comment to post
+// @Description add comment, auth required
+// @Tags comment
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param comment body comment.AddCommentInput true "comment info"
+// @Success 201 {object} comment.CommentDto
+// @Router /v1/comment [post]
 func (u *CommentHdlImpl) AddCommentHdl(ctx *gin.Context){
 	userId := ctx.GetUint64("user_id")
 	reqBody := comment.AddCommentInput{}
@@ -82,7 +91,6 @@ func (u *CommentHdlImpl) AddCommentHdl(ctx *gin.Context){
 		)
 		return
 	}
-	result.User = nil
 
 	responseMessage := response.Response{
 		Message: "add comment success",
@@ -90,14 +98,24 @@ func (u *CommentHdlImpl) AddCommentHdl(ctx *gin.Context){
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)
 }
 
+// @Summary update comment
+// @Description update comment, auth required
+// @Tags comment
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param id path int true "comment id"
+// @Param comment body comment.UpdateCommentInput true "comment info"
+// @Success 201 {object} comment.CommentDto
+// @Router /v1/comment/{id} [put]
 func (u *CommentHdlImpl) UpdateCommentHdl(ctx *gin.Context) {
 	userId := ctx.GetUint64("user_id")
 	paramId := ctx.Params.ByName("id")
@@ -190,15 +208,23 @@ func (u *CommentHdlImpl) UpdateCommentHdl(ctx *gin.Context) {
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)
 }
 
-
+// @Summary delete comment by id
+// @Description delete comment, auth required
+// @Tags comment
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param id path int true "comment id"
+// @Success 201
+// @Router /v1/comment/{id} [delete]
 func (u *CommentHdlImpl) DeleteCommentByIdHdl(ctx *gin.Context) {
 	userId := ctx.GetUint64("user_id")
 	paramId := ctx.Params.ByName("id")
@@ -248,9 +274,9 @@ func (u *CommentHdlImpl) DeleteCommentByIdHdl(ctx *gin.Context) {
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)

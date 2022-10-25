@@ -24,8 +24,8 @@ func NewUserUsecase(userRepo user.UserRepo) user.UserUsecase {
 	return &UserUsecaseImpl{userRepo: userRepo}
 }
 
-func (u *UserUsecaseImpl) GetUserByIdSvc(ctx context.Context, input uint64) (result user.UserGetDto, usecaseError response.UsecaseError){
-	user, err := u.userRepo.GetUserById(ctx, input)
+func (u *UserUsecaseImpl) GetUserByIdSvc(ctx context.Context, input uint64) (result user.UserWithSocialMediaDto, usecaseError response.UsecaseError){
+	user, err := u.userRepo.GetUserWithSocialMediaById(ctx, input)
 	if err != nil {
 		err = errors.New("internal server error")
 		usecaseError = response.UsecaseError{
@@ -48,11 +48,12 @@ func (u *UserUsecaseImpl) GetUserByIdSvc(ctx context.Context, input uint64) (res
 	}
 	result.ID = user.ID
 	result.Username = user.Username
+	result.SocialMedias = *user.SocialMedias
 
 	return result, usecaseError
 }
 
-func (u *UserUsecaseImpl) UpdateUserSvc(ctx context.Context, userId uint64, input user.UserUpdateDto) (result string, usecaseError response.UsecaseError){
+func (u *UserUsecaseImpl) UpdateUserSvc(ctx context.Context, userId uint64, input user.UserUpdateDto) (result user.UserUpdateResponseDto, usecaseError response.UsecaseError){
 	// find logged in user
 	userLoggedIn, err := u.userRepo.GetUserById(ctx, userId)
 	if err != nil {
@@ -111,8 +112,9 @@ func (u *UserUsecaseImpl) UpdateUserSvc(ctx context.Context, userId uint64, inpu
 		DOB:      time.Time(user.DoB),
 	}
 	tokenID, _ := token.CreateJWT(ctx, claimID)
+	result.TokenId = tokenID
 
-	return tokenID, usecaseError
+	return result, usecaseError
 }
 
 func (u *UserUsecaseImpl) DeleteUserSvc(ctx context.Context, userId uint64) (usecaseError response.UsecaseError){

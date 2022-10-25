@@ -1,0 +1,635 @@
+definitions:
+  auth.Login:
+    properties:
+      email:
+        example: luigi@mail.com
+        type: string
+      password:
+        example: password
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  auth.Token:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+      token_id:
+        type: string
+    type: object
+  comment.AddCommentInput:
+    properties:
+      message:
+        example: cool
+        type: string
+      photo_id:
+        example: 1
+        type: integer
+    required:
+    - message
+    - photo_id
+    type: object
+  comment.CommentDto:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      message:
+        type: string
+      photo_id:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  comment.UpdateCommentInput:
+    properties:
+      message:
+        example: nice
+        type: string
+    required:
+    - message
+    type: object
+  photo.AddPhotoInput:
+    properties:
+      caption:
+        example: caption
+        type: string
+      title:
+        example: title
+        type: string
+      url:
+        example: url
+        type: string
+      userId:
+        type: integer
+    required:
+    - caption
+    - title
+    - url
+    type: object
+  photo.PhotoDetailDto:
+    properties:
+      caption:
+        type: string
+      comments:
+        items:
+          $ref: '#/definitions/comment.CommentDto'
+        type: array
+      created_at:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  photo.PhotoDto:
+    properties:
+      caption:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  photo.UpdatePhotoInput:
+    properties:
+      caption:
+        example: caption
+        type: string
+      title:
+        example: title
+        type: string
+    required:
+    - caption
+    - title
+    type: object
+  socialmedia.AddSocialMediaInput:
+    properties:
+      name:
+        example: instagram
+        type: string
+      url:
+        example: url
+        type: string
+    required:
+    - name
+    - url
+    type: object
+  socialmedia.SocialMedia:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      url:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  socialmedia.UpdateSocialMediaInput:
+    properties:
+      url:
+        example: url
+        type: string
+    required:
+    - url
+    type: object
+  user.UserCreatedDto:
+    properties:
+      age:
+        type: integer
+      email:
+        type: string
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
+  user.UserDto:
+    properties:
+      date_of_birth:
+        example: "1999-09-19"
+        type: string
+      email:
+        example: luigi@mail.com
+        type: string
+      password:
+        example: password
+        minLength: 6
+        type: string
+      username:
+        example: luigi
+        type: string
+    required:
+    - date_of_birth
+    - email
+    - password
+    - username
+    type: object
+  user.UserUpdateDto:
+    properties:
+      email:
+        example: luigi@mail.com
+        type: string
+      username:
+        example: luigi
+        type: string
+    required:
+    - email
+    - username
+    type: object
+  user.UserUpdateResponseDto:
+    properties:
+      token_id:
+        type: string
+    type: object
+  user.UserWithSocialMediaDto:
+    properties:
+      id:
+        type: integer
+      social_medias:
+        items:
+          $ref: '#/definitions/socialmedia.SocialMedia'
+        type: array
+      username:
+        type: string
+    type: object
+info:
+  contact:
+    email: hamid1bae1@gmail.com
+    name: Hamid Baehaqi
+  description: This is API for user to post something
+  termsOfService: http://swagger.io/terms/
+  title: MyGram API Documentation
+  version: "1.0"
+paths:
+  /v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: login user to get auth token
+      parameters:
+      - description: login info
+        in: body
+        name: loginBody
+        required: true
+        schema:
+          $ref: '#/definitions/auth.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.Token'
+      summary: login
+      tags:
+      - auth
+  /v1/auth/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: refresh token to extend token expiry, required auth with refresh_token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.Token'
+      security:
+      - Bearer: []
+      summary: refresh token
+      tags:
+      - auth
+  /v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: field date_of_birth should use pattern "yyyy-mm-dd"
+      parameters:
+      - description: user credential
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/user.UserCreatedDto'
+      summary: register
+      tags:
+      - auth
+  /v1/comment:
+    post:
+      consumes:
+      - application/json
+      description: add comment, auth required
+      parameters:
+      - description: comment info
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/comment.AddCommentInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/comment.CommentDto'
+      security:
+      - Bearer: []
+      summary: add comment to post
+      tags:
+      - comment
+  /v1/comment/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete comment, auth required
+      parameters:
+      - description: comment id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      security:
+      - Bearer: []
+      summary: delete comment by id
+      tags:
+      - comment
+    put:
+      consumes:
+      - application/json
+      description: update comment, auth required
+      parameters:
+      - description: comment id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: comment info
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/comment.UpdateCommentInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/comment.CommentDto'
+      security:
+      - Bearer: []
+      summary: update comment
+      tags:
+      - comment
+  /v1/photo:
+    get:
+      consumes:
+      - application/json
+      description: get photos, auth required. without query will get authenticated
+        photos. with query will get photos from user with id in query
+      parameters:
+      - description: user id
+        in: query
+        name: user_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/photo.PhotoDetailDto'
+            type: array
+      security:
+      - Bearer: []
+      summary: get photos from user
+      tags:
+      - photo
+    post:
+      consumes:
+      - application/json
+      description: add photo, auth required
+      parameters:
+      - description: photo info
+        in: body
+        name: photo
+        required: true
+        schema:
+          $ref: '#/definitions/photo.AddPhotoInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/photo.PhotoDto'
+      security:
+      - Bearer: []
+      summary: add photo
+      tags:
+      - photo
+  /v1/photo/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete photo, auth required
+      parameters:
+      - description: photo id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      security:
+      - Bearer: []
+      summary: delete photo by id
+      tags:
+      - photo
+    get:
+      consumes:
+      - application/json
+      description: get photo by photo id
+      parameters:
+      - description: photo id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/photo.PhotoDetailDto'
+      security:
+      - Bearer: []
+      summary: get photo by id
+      tags:
+      - photo
+    put:
+      consumes:
+      - application/json
+      description: update photo, auth required
+      parameters:
+      - description: photo id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: photo info
+        in: body
+        name: photo
+        required: true
+        schema:
+          $ref: '#/definitions/photo.UpdatePhotoInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/photo.PhotoDto'
+      security:
+      - Bearer: []
+      summary: update photo
+      tags:
+      - photo
+  /v1/social-media:
+    get:
+      consumes:
+      - application/json
+      description: list all social media from logged in user, auth required
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/socialmedia.SocialMedia'
+            type: array
+      security:
+      - Bearer: []
+      summary: get social media from logged in user
+      tags:
+      - social-media
+    post:
+      consumes:
+      - application/json
+      description: add social media to user, auth required
+      parameters:
+      - description: social media info
+        in: body
+        name: socialmedia
+        required: true
+        schema:
+          $ref: '#/definitions/socialmedia.AddSocialMediaInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/socialmedia.SocialMedia'
+      security:
+      - Bearer: []
+      summary: add social media to user
+      tags:
+      - social-media
+  /v1/social-media/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete social media, auth required
+      parameters:
+      - description: social media id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      security:
+      - Bearer: []
+      summary: delete social media
+      tags:
+      - social-media
+    put:
+      consumes:
+      - application/json
+      description: update social media, auth required
+      parameters:
+      - description: social media id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: social media info
+        in: body
+        name: socialmedia
+        required: true
+        schema:
+          $ref: '#/definitions/socialmedia.UpdateSocialMediaInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/socialmedia.SocialMedia'
+      security:
+      - Bearer: []
+      summary: update social media
+      tags:
+      - social-media
+  /v1/user:
+    delete:
+      consumes:
+      - application/json
+      description: delete user, auth required
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      security:
+      - Bearer: []
+      summary: delete user
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: update user, auth required
+      parameters:
+      - description: user info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserUpdateDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/user.UserUpdateResponseDto'
+      security:
+      - Bearer: []
+      summary: update user
+      tags:
+      - user
+  /v1/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get user
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.UserWithSocialMediaDto'
+      summary: get user by id
+      tags:
+      - user
+securityDefinitions:
+  Bearer:
+    description: '"Type ''Bearer TOKEN'' to correctly set the API Key"'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

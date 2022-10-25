@@ -20,6 +20,15 @@ func NewPhotoHandler(photoUsecase photo.PhotoUsecase) photo.PhotoHandler {
 	return &PhotoHdlImpl{photoUsecase: photoUsecase}
 }
 
+// @Summary add photo
+// @Description add photo, auth required
+// @Tags photo
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param photo body photo.AddPhotoInput true "photo info"
+// @Success 201 {object} photo.PhotoDto
+// @Router /v1/photo [post]
 func (u *PhotoHdlImpl) AddPhotoHdl(ctx *gin.Context){
 	userId := ctx.GetUint64("user_id")
 
@@ -85,7 +94,6 @@ func (u *PhotoHdlImpl) AddPhotoHdl(ctx *gin.Context){
 		)
 		return
 	}
-	result.User = nil
 
 	responseMessage := response.Response{
 		Message: "add photo success",
@@ -93,14 +101,23 @@ func (u *PhotoHdlImpl) AddPhotoHdl(ctx *gin.Context){
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)
 }
 
+// @Summary get photo by id
+// @Description get photo by photo id
+// @Tags photo
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param id path int true "photo id"
+// @Success 200 {object} photo.PhotoDetailDto
+// @Router /v1/photo/{id} [get]
 func (u *PhotoHdlImpl) GetPhotoByIdHdl(ctx *gin.Context){
 	paramId := ctx.Params.ByName("id")
 	if paramId == ""{
@@ -178,6 +195,15 @@ func (u *PhotoHdlImpl) GetPhotoByIdHdl(ctx *gin.Context){
 	)
 }
 
+// @Summary get photos from user
+// @Description get photos, auth required. without query will get authenticated photos. with query will get photos from user with id in query
+// @Tags photo
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param user_id query int false "user id"
+// @Success 200 {object} []photo.PhotoDetailDto
+// @Router /v1/photo [get]
 func (u *PhotoHdlImpl) GetPhotoByUserIdHdl(ctx *gin.Context) {
 	var userId  uint64
 	userId = ctx.GetUint64("user_id")
@@ -241,31 +267,20 @@ func (u *PhotoHdlImpl) GetPhotoByUserIdHdl(ctx *gin.Context) {
 	)
 }
 
-
+// @Summary update photo
+// @Description update photo, auth required
+// @Tags photo
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param id path int true "photo id"
+// @Param photo body photo.UpdatePhotoInput true "photo info"
+// @Success 201 {object} photo.PhotoDto
+// @Router /v1/photo/{id} [put]
 func (u *PhotoHdlImpl) UpdatePhotoHdl(ctx *gin.Context) {
 	userId := ctx.GetUint64("user_id")
 
 	paramId := ctx.Params.ByName("id")
-	// if paramId == ""{
-	// 	err := errors.New("params can't be null")
-	// 	responseMessage := response.Response{
-	// 		Message: "get photo failed",
-	// 		InvalidArg: &response.InvalidArg{
-	// 			ErrorType:    errortype.INVALID_INPUT,
-	// 			ErrorMessage: err.Error(),
-	// 		},
-	// 	}
-
-	// 	ctx.AbortWithStatusJSON(
-	// 		http.StatusBadRequest,
-	// 		response.Build(
-	// 			http.StatusBadRequest,
-	// 			responseMessage,
-	// 		),
-	// 	)
-	// 	return
-	// }
-
 	photoId, err := strconv.ParseUint(paramId, 10, 64)
 	if err != nil{
 		err := errors.New("params should be a number")
@@ -355,38 +370,26 @@ func (u *PhotoHdlImpl) UpdatePhotoHdl(ctx *gin.Context) {
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)
 }
 
-
+// @Summary delete photo by id
+// @Description delete photo, auth required
+// @Tags photo
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param id path int true "photo id"
+// @Success 201
+// @Router /v1/photo/{id} [delete]
 func (u *PhotoHdlImpl) DeletePhotoByIdHdl(ctx *gin.Context) {
 	userId := ctx.GetUint64("user_id")
 	paramId := ctx.Params.ByName("id")
-	// if paramId == ""{
-	// 	err := errors.New("params can't be null")
-	// 	responseMessage := response.Response{
-	// 		Message: "get photo failed",
-	// 		InvalidArg: &response.InvalidArg{
-	// 			ErrorType:    errortype.INVALID_INPUT,
-	// 			ErrorMessage: err.Error(),
-	// 		},
-	// 	}
-
-	// 	ctx.AbortWithStatusJSON(
-	// 		http.StatusBadRequest,
-	// 		response.Build(
-	// 			http.StatusBadRequest,
-	// 			responseMessage,
-	// 		),
-	// 	)
-	// 	return
-	// }
-
 	photoId, err := strconv.ParseUint(paramId, 10, 64)
 	if err != nil{
 		err := errors.New("params should be a number")
@@ -433,9 +436,9 @@ func (u *PhotoHdlImpl) DeletePhotoByIdHdl(ctx *gin.Context) {
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)

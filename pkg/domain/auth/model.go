@@ -7,8 +7,8 @@ import (
 )
 
 type Login struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password,omitempty" validate:"required,min=6"`
+	Email    string `json:"email" validate:"required,email" example:"luigi@mail.com"`
+	Password string `json:"password,omitempty" validate:"required,min=6" example:"password"`
 }
 
 type Token struct {

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"final-project/pkg/domain/socialmedia"
 	"time"
 
 	"gorm.io/datatypes"
@@ -14,13 +15,14 @@ type User struct {
 	DoB       datatypes.Date `json:"date_of_birth" gorm:"column:date_of_birth;not null" validate:"required"`
 	CreatedAt time.Time      `json:"created_at" gorm:"column:created_at;DEFAULT:current_timestamp;not null"`
 	UpdatedAt time.Time      `json:"updated_at" gorm:"column:updated_at;"`
+	SocialMedias *[]socialmedia.SocialMedia `json:"social_medias,omitempty" gorm:"foreignkey:UserId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type UserDto struct {
-	Username string `json:"username" validate:"required"`
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=6"`
-	DoB      string `json:"date_of_birth" validate:"required,ISO8601date"`
+	Username string `json:"username" validate:"required" example:"luigi"`
+	Email    string `json:"email" validate:"required,email" example:"luigi@mail.com"`
+	Password string `json:"password" validate:"required,min=6" example:"password"`
+	DoB      string `json:"date_of_birth" validate:"required,ISO8601date" example:"1999-09-19"`
 }
 
 type UserCreatedDto struct {
@@ -30,12 +32,17 @@ type UserCreatedDto struct {
 	Age      int `json:"age"`
 }
 
-type UserGetDto struct {
+type UserWithSocialMediaDto struct {
 	ID       uint64 `json:"id"`
 	Username string `json:"username"`
+	SocialMedias []socialmedia.SocialMedia `json:"social_medias"`
 }
 
 type UserUpdateDto struct {
-	Username string `json:"username" validate:"required"`
-	Email    string `json:"email" validate:"required,email"`
+	Username string `json:"username" validate:"required" example:"luigi"`
+	Email    string `json:"email" validate:"required,email" example:"luigi@mail.com"`
+}
+
+type UserUpdateResponseDto struct {
+	TokenId string `json:"token_id"`
 }

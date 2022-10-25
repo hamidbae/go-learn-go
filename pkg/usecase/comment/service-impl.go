@@ -20,7 +20,7 @@ func NewCommentUsecase(commentRepo comment.CommentRepo, userRepo user.UserRepo) 
 	return &CommentUsecaseImpl{commentRepo: commentRepo, userRepo: userRepo}
 }
 
-func (u *CommentUsecaseImpl) AddCommentSvc(ctx context.Context, input comment.AddCommentInput, userId uint64) (result comment.Comment, usecaseError response.UsecaseError){
+func (u *CommentUsecaseImpl) AddCommentSvc(ctx context.Context, input comment.AddCommentInput, userId uint64) (result comment.CommentDto, usecaseError response.UsecaseError){
 	comment := comment.Comment{
 		Message: input.Message,
 		PhotoId: input.PhotoId,
@@ -40,7 +40,14 @@ func (u *CommentUsecaseImpl) AddCommentSvc(ctx context.Context, input comment.Ad
 		return result, usecaseError
 	}
 
-	return comment, usecaseError
+	result.ID = comment.ID
+	result.Message = comment.Message
+	result.PhotoId = comment.PhotoId
+	result.UserId = comment.UserId
+	result.CreatedAt = comment.CreatedAt
+	result.UpdatedAt = comment.UpdatedAt
+
+	return result, usecaseError
 }
 
 // func (u *CommentUsecaseImpl) GetCommentByIdSvc(ctx context.Context, commentId uint64) (result comment.Comment, usecaseError response.UsecaseError){
@@ -72,7 +79,7 @@ func (u *CommentUsecaseImpl) AddCommentSvc(ctx context.Context, input comment.Ad
 // 	return result, usecaseError
 // }
 
-func (u *CommentUsecaseImpl) UpdateCommentByIdSvc(ctx context.Context, commentId uint64, userId uint64, input comment.UpdateCommentInput) (result comment.Comment, usecaseError response.UsecaseError){
+func (u *CommentUsecaseImpl) UpdateCommentByIdSvc(ctx context.Context, commentId uint64, userId uint64, input comment.UpdateCommentInput) (result comment.CommentDto, usecaseError response.UsecaseError){
 	comment, err := u.commentRepo.GetById(ctx, commentId)
 	if(userId != comment.UserId){
 		log.Printf("unauthorized user\n")
@@ -109,7 +116,14 @@ func (u *CommentUsecaseImpl) UpdateCommentByIdSvc(ctx context.Context, commentId
 		return result, usecaseError
 	}
 
-	return comment, usecaseError
+	result.ID = comment.ID
+	result.Message = comment.Message
+	result.PhotoId = comment.PhotoId
+	result.UserId = comment.UserId
+	result.CreatedAt = comment.CreatedAt
+	result.UpdatedAt = comment.UpdatedAt
+
+	return result, usecaseError
 }
 
 func (u *CommentUsecaseImpl) DeleteCommentByIdSvc(ctx context.Context, userId uint64, commentId uint64) (usecaseError response.UsecaseError){

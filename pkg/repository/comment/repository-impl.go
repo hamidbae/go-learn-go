@@ -23,6 +23,7 @@ func (u *CommentRepoImpl) InsertComment(ctx context.Context, insertedComment *co
 
 	if err = db.Error; err != nil {
 		log.Printf("error when inserting comment\n")
+		return err
 	}
 	return err
 }
@@ -35,6 +36,7 @@ func (u *CommentRepoImpl) GetById(ctx context.Context, commentId uint64) (result
 
 	if err = db.Error; err != nil {
 		log.Printf("error when get comment\n")
+		return result, err
 	}
 	return result, err
 }
@@ -47,6 +49,7 @@ func (u *CommentRepoImpl) UpdateComment(ctx context.Context, comment *comment.Co
 	db.Model(&comment).Update("message", input.Message)
 	if err = db.Error; err != nil {
 		log.Printf("error when update comment\n")
+		return err
 	}
 	return err
 }
@@ -58,6 +61,7 @@ func (u *CommentRepoImpl) DeleteCommentById(ctx context.Context, commentId uint6
 	db.Delete(&comment.Comment{}, commentId)
 	if err = db.Error; err != nil {
 		log.Printf("error when delete comment with id %v\n", commentId)
+		return err
 	}
 	return err
 }

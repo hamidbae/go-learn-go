@@ -3,6 +3,13 @@ package main
 import (
 	engine "final-project/config/gin"
 	"final-project/config/postgres"
+	"final-project/docs"
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
+	swaggerfiles "github.com/swaggo/files"
+	ginswagger "github.com/swaggo/gin-swagger"
 
 	userrepo "final-project/pkg/repository/user"
 	userhandler "final-project/pkg/server/http/handler/user"
@@ -31,17 +38,43 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @title           MyGram API Documentation
+// @version         1.0
+// @description     This is API for user to post something
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   Hamid Baehaqi
+// @contact.email  hamid1bae1@gmail.com
+
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+// @description "Type 'Bearer TOKEN' to correctly set the API Key"
 func main() {
+	// uncomment below when run on local
+	err := godotenv.Load(".env")
+
+	if err != nil {
+	  log.Fatalf("Error loading .env file")
+	}
+
 	postgresCln := postgres.NewPostgresConnection()
 	
+	host := os.Getenv("HOST") 
+	port := os.Getenv("PORT")
 	ginEngine := engine.NewGinHttp(engine.Config{
-		Port: ":8080",
+		Port: ":" + port,
 	})
 
 	ginEngine.GetGin().Use(
 		gin.Recovery(),
 		gin.Logger(),
 	)
+
+
+	docs.SwaggerInfo.Host = host + ":" + port
+	docs.SwaggerInfo.BasePath = "/api"
+	ginEngine.GetGin().GET("/swagger/*any", ginswagger.WrapHandler(swaggerfiles.Handler))
 	
 	userRepo := userrepo.NewUserRepo(postgresCln)
 	photoRepo := photorepo.NewPhotoRepo(postgresCln)

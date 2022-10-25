@@ -22,7 +22,8 @@ func (u *UserRepoImpl) GetUserByEmail(ctx context.Context, email string) (result
 	db := u.pgCln.GetClient()
 	db.Model(&user.User{}).Where("email = ?", email).Find(&result)
 	if err = db.Error; err != nil {
-		log.Printf("error when getting user with email %v\n",email)
+		log.Printf("error when find user with email %v\n",email)
+		return result, err
 	}
 	return result, err
 }
@@ -34,6 +35,21 @@ func  (u *UserRepoImpl) GetUserById(ctx context.Context, userId uint64) (result 
 	db.Model(&user.User{}).Where("id = ?", userId).Find(&result)
 	if err = db.Error; err != nil {
 		log.Printf("error when getting user with id %v\n",userId)
+		return result, err
+	}
+	return result, err
+}
+
+func  (u *UserRepoImpl) GetUserWithSocialMediaById(ctx context.Context, userId uint64) (result user.User, err error){
+	log.Printf("%T - GetUserById is invoked]\n", u)
+	defer log.Printf("%T - GetUserById executed\n", u)
+	db := u.pgCln.GetClient()
+	// db.Model(&user.User{}).Where("id = ?", userId).Preload("SocialMedia").Find(&result).Where()
+	// db.Preload("SocialMedia").Model(&user.User{}).Where("id = ?", userId).Find(&result)
+	db.Preload("SocialMedias").Find(&result, userId)
+	if err = db.Error; err != nil {
+		log.Printf("error when getting user with id %v\n",userId)
+		return result, err
 	}
 	return result, err
 }
@@ -45,6 +61,7 @@ func  (u *UserRepoImpl) GetUserByUsername(ctx context.Context, username string) 
 	db.Model(&user.User{}).Where("username = ?", username).Find(&result)
 	if err = db.Error; err != nil {
 		log.Printf("error when getting user with username %v\n",username)
+		return result, err
 	}
 	return result, err
 }
@@ -57,6 +74,7 @@ func (u *UserRepoImpl) InsertUser(ctx context.Context, insertedUser *user.User) 
 
 	if err = db.Error; err != nil {
 		log.Printf("error when inserting user with email %v\n",insertedUser.Email)
+		return err
 	}
 	return err
 }
@@ -69,6 +87,7 @@ func (u *UserRepoImpl) UpdateUser(ctx context.Context, userId uint64, userUpdate
 	db.Model(&user).Where("id = ?", userId).Update("username", userUpdate.Username).Update("email", userUpdate.Email)
 	if err = db.Error; err != nil {
 		log.Printf("error when update user with email %v\n",user.Email)
+		return user, err
 	}
 	return user, err
 }

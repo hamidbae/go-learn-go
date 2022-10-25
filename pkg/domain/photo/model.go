@@ -17,19 +17,40 @@ type Photo struct {
 	UserId    uint64         `json:"user_id" gorm:"column:user_id;not null"`
 	CreatedAt time.Time      `json:"created_at" gorm:"column:created_at;DEFAULT:current_timestamp;not null"`
 	UpdatedAt time.Time      `json:"updated_at" gorm:"column:updated_at;"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"column:deleted_at;"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"column:deleted_at;"`
 	User      *user.User      `json:"user,omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Comments  *[]comment.Comment `json:"comments,omitempty" gorm:"foreignkey:PhotoId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
+type PhotoDto struct {
+	ID        uint64         `json:"id"`
+	Title     string         `json:"title"`
+	Caption   string         `json:"caption"`
+	URL       string         `json:"url"`
+	UserId    uint64         `json:"user_id"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+}
+
+type PhotoDetailDto struct {
+	ID        uint64         `json:"id"`
+	Title     string         `json:"title"`
+	Caption   string         `json:"caption"`
+	URL       string         `json:"url"`
+	UserId    uint64         `json:"user_id"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	Comments  *[]comment.CommentDto `json:"comments"`
+}
+
 type AddPhotoInput struct {
-	Title     string         `validate:"required"`
-	Caption   string         `validate:"required"`
-	URL       string         `validate:"required"`
+	Title     string         `validate:"required" example:"title"`
+	Caption   string         `validate:"required" example:"caption"`
+	URL       string         `validate:"required" example:"url"`
 	UserId    uint64 
 }
 
 type UpdatePhotoInput struct {
-	Title     string         `validate:"required"`
-	Caption   string         `validate:"required"`
+	Title     string         `validate:"required" example:"title"`
+	Caption   string         `validate:"required" example:"caption"`
 }

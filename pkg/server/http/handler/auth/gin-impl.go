@@ -25,6 +25,14 @@ func NewAuthHandler(authUsecase auth.AuthUsecase) auth.AuthHandler {
 	return &AuthHdlImpl{authUsecase: authUsecase}
 }
 
+// @Summary register
+// @Description field date_of_birth should use pattern "yyyy-mm-dd"
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param user body user.UserDto true "user credential"
+// @Success 201 {object} user.UserCreatedDto
+// @Router /v1/auth/register [post]
 func (u *AuthHdlImpl) RegisterHdl(ctx *gin.Context) {
 	log.Printf("%T - RegisterHdl is invoked]\n", u)
 	defer log.Printf("%T - RegisterHdl executed\n", u)
@@ -145,14 +153,22 @@ func (u *AuthHdlImpl) RegisterHdl(ctx *gin.Context) {
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)
 }
 
+// @Summary login
+// @Description login user to get auth token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param loginBody body auth.Login true "login info"
+// @Success 200 {object} auth.Token
+// @Router /v1/auth/login [post]
 func (u *AuthHdlImpl) LoginHdl(ctx *gin.Context) {
 	// binding body
 	reqBody := auth.Login{}
@@ -233,6 +249,14 @@ func (u *AuthHdlImpl) LoginHdl(ctx *gin.Context) {
 	)
 }
 
+// @Summary refresh token
+// @Description refresh token to extend token expiry, required auth with refresh_token
+// @Tags auth
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Success 200 {object} auth.Token
+// @Router /v1/auth/refresh-token [post]
 func (u *AuthHdlImpl) RefreshTokenHdl(ctx *gin.Context) {
 	userId := ctx.GetUint64("user_id")
 	result, usecaseError := u.authUsecase.RefreshTokenSvc(ctx, userId)

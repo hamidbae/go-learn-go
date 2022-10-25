@@ -11,6 +11,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Config struct {
@@ -31,13 +32,6 @@ type PostgresClientImpl struct {
 }
 
 func NewPostgresConnection() PostgresClient {
-	// uncomment below when run on local
-	
-	// err := godotenv.Load(".env")
-
-	// if err != nil {
-	//   log.Fatalf("Error loading .env file")
-	// }
 	
 	config := Config{
 		Host: os.Getenv("DB_HOST"),
@@ -59,7 +53,9 @@ func NewPostgresConnection() PostgresClient {
 		config.Password,
 		config.DatabaseName)
 
-	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	
 	if err != nil {
 		// if fail, apps will be shutting down

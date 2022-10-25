@@ -20,6 +20,14 @@ func NewUserHandler(userUsecase user.UserUsecase) user.UserHandler {
 	return &UserHdlImpl{userUsecase: userUsecase}
 }
 
+// @Summary get user by id
+// @Description get user
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param id path int false "user id"
+// @Success 200 {object} user.UserWithSocialMediaDto
+// @Router /v1/user/{id} [get]
 func (u *UserHdlImpl) GetUserByIdHdl(ctx *gin.Context) {
 	paramId := ctx.Params.ByName("id")
 	if paramId == ""{
@@ -97,6 +105,15 @@ func (u *UserHdlImpl) GetUserByIdHdl(ctx *gin.Context) {
 	)
 }
 
+// @Summary update user
+// @Description update user, auth required
+// @Tags user
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param user body user.UserUpdateDto true "user info"
+// @Success 201 {object} user.UserUpdateResponseDto
+// @Router /v1/user [put]
 func (u *UserHdlImpl) UpdateUserHdl(ctx *gin.Context) {
 	userId := ctx.GetUint64("user_id")
 
@@ -164,21 +181,27 @@ func (u *UserHdlImpl) UpdateUserHdl(ctx *gin.Context) {
 	}
 
 	responseMessage := response.Response{
-		Message: "login success",
-		Data: map[string]string{
-			"token_id" : result,
-		},
+		Message: "update user success",
+		Data: result,
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)
 }
 
+// @Summary delete user
+// @Description delete user, auth required
+// @Tags user
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Success 201
+// @Router /v1/user [delete]
 func (u *UserHdlImpl) DeleteUserHdl(ctx *gin.Context) {
 	userId := ctx.GetUint64("user_id")
 
@@ -208,9 +231,9 @@ func (u *UserHdlImpl) DeleteUserHdl(ctx *gin.Context) {
 	}
 
 	ctx.JSONP(
-		http.StatusAccepted,
+		http.StatusCreated,
 		response.Build(
-			http.StatusAccepted,
+			http.StatusCreated,
 			responseMessage,
 		),
 	)
