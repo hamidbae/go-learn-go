@@ -1,0 +1,52 @@
+[
+ {
+  "water": 37,
+  "wind": 6,
+  "status": "BAHAYA"
+ },
+ {
+  "water": 11,
+  "wind": 45,
+  "status": "BAHAYA"
+ },
+ {
+  "water": 28,
+  "wind": 74,
+  "status": "BAHAYA"
+ },
+ {
+  "water": 62,
+  "wind": 89,
+  "status": "BAHAYA"
+ },
+ {
+  "water": 94,
+  "wind": 11,
+  "status": "BAHAYA"
+ },
+ {
+  "water": 56,
+  "wind": 0,
+  "status": "BAHAYA"
+ },
+ {
+  "water": 25,
+  "wind": 40,
+  "status": "BAHAYA"
+ },
+ {
+  "water": 81,
+  "wind": 18,
+  "status": "BAHAYA"
+ },
+ {
+  "water": 47,
+  "wind": 59,
+  "status": "BAHAYA"
+ },
+ {
+  "water": 81,
+  "wind": 87,
+  "status": "BAHAYA"
+ }
+]

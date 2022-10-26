@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="refresh" content="5" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{.title}}</title>
+    <style>
+      body {
+        background-image: url("https://www.tripsavvy.com/thmb/FwmQ-JvBEBDDlVb-j_zdEo0iVsA=/2048x1152/smart/filters:no_upscale()/beach-5b59c9b7c9e77c004b3e0ff0.jpg");
+        background-size: cover;
+      }
+
+      table,
+      th,
+      td {
+        border: 3px solid white;
+      }
+
+      table {
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 5px 15px;
+      }
+
+      .white-text {
+        color: white;
+      }
+
+      .table1 {
+        margin-bottom: 30px;
+      }
+
+      .title {
+        font-size: 30px;
+        font-weight: 500;
+        color: white;
+      }
+
+      .history {
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <table class="table1">
+        <tr>
+          <th class="white-text">Water</th>
+          <td class="white-text">{{.water}}m</td>
+        </tr>
+        <tr>
+          <th class="white-text">Wind</th>
+          <td class="white-text">{{.wind}}m/s</td>
+        </tr>
+        <tr>
+          <th class="white-text">Status</th>
+          <td class="white-text">{{.status}}</td>
+        </tr>
+      </table>
+    </div>
+    <div>
+      <div class="title">History Data</div>
+      <div class="history">{{.history}}</div>
+    </div>
+  </body>
+</html>
